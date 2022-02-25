@@ -33,3 +33,14 @@ logistic_AUC[[2]] = roc(df_2$state ~ test_prob, plot = FALSE, print.auc = TRUE)
 
 # Interactive effect of week and number of calls
 
+logistic_models[[3]] <- glm(state ~ num_calls * week, data = df_2, family = "binomial")
+summary(logistic_models[[3]])
+
+model_glm_pred <- ifelse(predict(logistic_models[[3]], type = "link") > 0, 1, 0)
+CM <- confusionMatrix(factor(df_2$state[!is.na(df_2$state)], levels = c(0,1)), 
+                      factor(model_glm_pred[!is.na(df_2$state)], levels = c(0,1)),
+                      mode = "prec_recall")
+
+logistic_accuracy[[3]] <- CM$overall["Accuracy"] 
+test_prob <- predict(logistic_models[[3]], newdata = df_2, type = "response")
+logistic_AUC[[3]] = roc(df_2$state ~ test_prob, plot = FALSE, print.auc = TRUE)
