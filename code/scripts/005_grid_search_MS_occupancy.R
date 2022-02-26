@@ -69,10 +69,7 @@ for(i in 1:nrow(thresholds)){
   HMM_df <- tbl_plot %>% 
     drop_na(week) %>% 
     mutate(n_week = as.numeric(week)) %>% 
-    #unique(week)
-    #group_by(site) %>% 
     pivot_wider(site,names_from = n_week, values_from = n, names_sort = TRUE) #%>% 
-
   x <- as.matrix(HMM_df[,-1])
   x[x<thresholds[i,2]] <- 1
   x[x>=thresholds[i,2] & x<thresholds[i,3]] <- 2
@@ -109,4 +106,4 @@ for(i in 1:nrow(thresholds)){
   print(thresholds[i,])
   
 }
-#write.csv(thresholds, "MS_threshold_assessment.csv")
+#write.csv(thresholds, "./data/clean/MS_threshold_assessment.csv")
