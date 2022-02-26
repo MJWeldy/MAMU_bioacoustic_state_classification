@@ -75,6 +75,7 @@ TS_adjusted <- c(3L, 0L, 0L, 0L, 3L, 0L, 0L, 2L, 0L, 3L, 0L, 0L, 0L, 0L, 0L, 0L,
 TS_adjusted[TS_adjusted<1] <- NA
 TS_adjusted[TS_adjusted>3] <- 3
 
-result <- confusionMatrix(factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(1,2,3)), 
+result <- confusionMatrix(
                           factor(round(probs[which(!is.na(TS_adjusted))]), levels = c(1,2,3)),
+                          factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(1,2,3)), 
                           mode = "prec_recall")

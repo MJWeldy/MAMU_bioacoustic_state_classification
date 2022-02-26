@@ -100,8 +100,9 @@ for(i in 1:nrow(thresholds)){
   out_summary <- mod$BUGSoutput$summary
   state_rows <- grepl(rownames(out_summary), pattern = "^z\\[")
   probs <- out_summary[state_rows, "50%"]
-  result <- confusionMatrix(factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(1,2,3)), 
+  result <- confusionMatrix( 
                             factor(round(probs[which(!is.na(TS_adjusted))]), levels = c(1,2,3)),
+                            factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(1,2,3)),
                             mode = "prec_recall")
   thresholds$accuracy[i] <- result$overall['Accuracy']
   thresholds$Kappa[i] <- result$overall['Kappa']

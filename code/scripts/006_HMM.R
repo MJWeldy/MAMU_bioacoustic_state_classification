@@ -31,7 +31,7 @@ x <- as.matrix(HMM_df[,-1])
 n_visit = ncol(x)
 n_site = nrow(x)
 n = 20
-m = 3
+m = 4
 
 
 mod = jags(data = list("x", "n", "m", "n_site", "n_visit" ), inits = NULL, 
@@ -56,7 +56,7 @@ long_HMM_df <- HMM_df %>%
 decoded_state_plot <- left_join(long_HMM_df,long_decoded_df,by = c("site", "week"))
 
 lambda <- grepl(rownames(out_summary), pattern = "^lambda\\[")
-lambdas <- out_summary[state_rows, "mean"]
+lambdas <- out_summary[lambda, "mean"]
 decoded_state_plot %>% 
   ggplot(aes(x = week, y = n, group = site, col = as.factor(state)))+
   geom_point()+
@@ -64,6 +64,7 @@ decoded_state_plot %>%
   geom_hline(yintercept=lambdas[1],alpha = 0.5)+
   geom_hline(yintercept=lambdas[2],alpha = 0.5)+
   geom_hline(yintercept=lambdas[3],alpha = 0.5)+
+  geom_hline(yintercept=lambdas[4],alpha = 0.5)+
   theme_classic()+
   theme(axis.text.x = element_text(angle = 90))
 
@@ -73,7 +74,11 @@ TS_adjusted <- c(3L, 0L, 0L, 0L, 3L, 0L, 0L, 2L, 0L, 3L, 0L, 0L, 0L, 0L, 0L, 0L,
 TS_adjusted[TS_adjusted<1] <- NA
 TS_adjusted[TS_adjusted>3] <- 3
 
-max_state <- apply(decoded_states[,-1], 1, max, na.rm=TRUE)
-confusionMatrix(factor(TS_adjusted, levels = c(1,2,3)), 
-                factor(max_state , levels = c(1,2,3)),
+max_state <- as.numeric(apply(decoded_states[,-1], 1, max, na.rm=TRUE))
+max_state[max_state>3] <- 3
+confusionMatrix(
+                factor(max_state[!is.na(TS_adjusted)] , levels = c(1,2,3)),
+                factor(TS_adjusted[!is.na(TS_adjusted)], levels = c(1,2,3)),
                 mode = "prec_recall")
+
+

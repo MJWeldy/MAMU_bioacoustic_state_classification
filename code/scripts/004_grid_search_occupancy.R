@@ -63,13 +63,13 @@ for(i in 1:nrow(thresholds)){
   state_rows <- grepl(rownames(out_summary), pattern = "^z\\[")
   probs <- out_summary[state_rows, "50%"]
   
-  #result <- confusionMatrix(factor(as.numeric(raw_x[1:19,2]), levels = c(1,2,3)), factor(round(probs[1:19]), levels = c(1,2,3)))
-  result <- confusionMatrix(factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(0,1)), 
+  result <- confusionMatrix(
                             factor(round(probs[which(!is.na(TS_adjusted))]), levels = c(0,1)),
+                            factor(TS_adjusted[which(!is.na(TS_adjusted))], levels = c(0,1)), 
                             mode = "prec_recall")
   thresholds$accuracy[i] <- result$overall['Accuracy']
   thresholds$Kappa[i] <- result$overall['Kappa']
   print(thresholds[i,])
   
 }
-#write.csv(thresholds, "occ_threshold_assessment.csv")
+#write.csv(thresholds, "./data/clean/occ_threshold_assessment.csv")
